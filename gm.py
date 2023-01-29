@@ -7,12 +7,15 @@ import openai
 import math
 from slack_sdk.webhook import WebhookClient
 
+# my api keys and stuff, hidden from git
+import keys
+
 # Authenticate with OpenAI using your API key
-openai.api_key = "YOUR_API_KEY_HERE"
+openai.api_key = keys.openai_api_key
 
 # Create a Slack client
 client = WebhookClient(
-    "YOUR_WEBHOOK_HERE"
+    "https://hooks.slack.com/services/" + keys.slack_me_key
 )
 
 # ChatGPT temp
@@ -135,6 +138,11 @@ elif day == 1:
     question = (
         "pick a complex topic from the area of "
         + science_topic
+        + " and tell me about it at a college level in 250 words."
+    )
+    poem = (
+        "create a short poem about science and technology, particularly in the area of "
+        + science_topic
     )
 
 elif day == 2:
@@ -142,7 +150,7 @@ elif day == 2:
     # how about we do a little money talk
     question = "Tell me something about college level finance. It can be a historical fact or academic."
     poem = "create a short poem about money"
-
+    
 elif day == 3:
     # thursday's we see the light
     # let's get some fun stuff going
