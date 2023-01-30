@@ -128,7 +128,7 @@ day = datetime.datetime.now().weekday()
 
 if day == 0:
     # monday's are hard
-    question = "create a gangster rap about a random human emotion"
+    question = "create a gangster rap about a random human emotion. reference the emotion in the opening line."
     poem = "create a short poem about parenthood"
 
 elif day == 1:
@@ -170,8 +170,8 @@ elif day == 5:
 
 elif day == 6:
     # sunday -- a day of rest
-    question = "what is one way i could bring more happiness into the world"
-    poem = "create a short poem about happiness"
+    question = "tell me about a pivotal moment in history in the voice of morgan freeman"
+    poem = "create a short poem about history"
 
 else:
     poem_response = "error yo"
