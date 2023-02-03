@@ -5,6 +5,8 @@ import time
 import datetime
 import openai
 import math
+import re
+import subprocess
 from slack_sdk.webhook import WebhookClient
 
 # my api keys and stuff, hidden from git
@@ -35,6 +37,12 @@ uptime %= 60
 uptime_seconds = math.floor(uptime)
 
 disk_usage = psutil.disk_usage("/")
+
+# disk health
+disk_name = "/dev/nvme0"
+nvme_health = subprocess.check_output("sudo nvme smart-log {} | grep 'percentage_used\s*:'".format(disk_name), shell=True)
+output = nvme_health.decode('ascii').strip()
+disk_health = 100 - int(re.findall(r'\d+', output)[-1])
 
 # some topics to choose from for topline quote
 quote_topics = [
@@ -222,7 +230,7 @@ slack_response = client.send(
             "type": "context",
             "elements": [
                 {
-                    "text": "_I have been alive for "
+                    "text": "_Up "
                     + str(uptime_days)
                     + " days, "
                     + str(uptime_hours)
@@ -236,7 +244,9 @@ slack_response = client.send(
                     + str(memory_percent)
                     + "% ram || "
                     + str(disk_usage.percent)
-                    + "% disk_",
+                    + "% du || "
+                    + str(disk_health)
+                    + "% dh_",
                     "type": "mrkdwn",
                 }
             ],
