@@ -40,7 +40,7 @@ disk_usage = psutil.disk_usage("/")
 
 # disk health
 disk_name = "/dev/nvme0"
-nvme_health = subprocess.check_output("sudo nvme smart-log {} | grep 'percentage_used\s*:'".format(disk_name), shell=True)
+nvme_health = subprocess.check_output("/usr/sbin/nvme smart-log {} | grep 'percentage_used\s*:'".format(disk_name), shell=True)
 output = nvme_health.decode('ascii').strip()
 disk_health = 100 - int(re.findall(r'\d+', output)[-1])
 
