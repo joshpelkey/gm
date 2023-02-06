@@ -39,10 +39,13 @@ uptime_seconds = math.floor(uptime)
 disk_usage = psutil.disk_usage("/")
 
 # disk health
-disk_name = "/dev/nvme0"
-nvme_health = subprocess.check_output("/usr/sbin/nvme smart-log {} | grep 'percentage_used\s*:'".format(disk_name), shell=True)
-output = nvme_health.decode('ascii').strip()
-disk_health = 100 - int(re.findall(r'\d+', output)[-1])
+percentage_used = 100
+nvme_file = open("nvme.log", "r")
+for line in nvme_file:
+    if re.search ("percentage_used", line):
+        percentage_used = re.findall(r'[0-9]+', line)
+
+disk_health = 100 - int(percentage_used[0])
 
 # some topics to choose from for topline quote
 quote_topics = [
