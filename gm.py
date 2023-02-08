@@ -40,7 +40,7 @@ disk_usage = psutil.disk_usage("/")
 
 # disk health
 percentage_used = 100
-nvme_file = open("nvme.log", "r")
+nvme_file = open(keys.home_dir + "nvme.log", "r")
 for line in nvme_file:
     if re.search ("percentage_used", line):
         percentage_used = re.findall(r'[0-9]+', line)
