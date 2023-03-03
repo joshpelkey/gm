@@ -75,8 +75,13 @@ quote_topics = [
 # pick a random quote topic
 quote_topic = random.choice(quote_topics)
 quote = "Share a random quote about " + quote_topic + " and attribute its author"
-quote_response = openai.Completion.create(
-    engine="text-davinci-003", prompt=quote, temperature=temp, max_tokens=1024
+quote_response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo", 
+    messages=[
+        {"role": "user", "content": quote}
+    ], 
+    temperature=temp, 
+    max_tokens=1024
 )
 
 # List of topics for daily
@@ -139,7 +144,7 @@ day = datetime.datetime.now().weekday()
 
 if day == 0:
     # monday's are hard
-    question = "tell me about a topic from the area of Aritifical Intelligence. Explain it to me at a college level."
+    question = "you are a college professor. tell me about a topic from the area of Aritifical Intelligence. Explain it to me at a college level."
     poem = "create a short poem about artificial intelligence"
 
 elif day == 1:
@@ -147,7 +152,7 @@ elif day == 1:
     # let's learn about science and tech
     science_topic = random.choice(topics)
     question = (
-        "pick a complex topic from the area of "
+        "you are a college professor. pick a complex topic from the area of "
         + science_topic
         + " and tell me about it at a college level in 250 words."
     )
@@ -159,7 +164,7 @@ elif day == 1:
 elif day == 2:
     # wednesday's ... keep going baby
     # how about we do a little money talk
-    question = "Tell me something about finance. Explain it to me at a college level."
+    question = "You are a college professor. Pick a topic from the area of finacne. Explain it to me at a college level."
     poem = "create a short poem about money"
     
 elif day == 3:
@@ -171,17 +176,17 @@ elif day == 3:
 elif day == 4:
     # friday baby
     # let's talk music
-    question = "Tell me an interesting fact about music, something that would impress a young lady."
+    question = "You are a court jester. Tell me an interesting fact about music, something that would impress a young lady."
     poem = "create a short poem poem about music"
 
 elif day == 5:
     # saturday --?? 
-    question = "tell me an interesting fact about a world landmark"
+    question = "You are a historian. Tell me an interesting fact about a world landmark"
     poem = "create a short poem about travelling"
 
 elif day == 6:
     # sunday -- a day of rest
-    question = "tell me about a pivotal moment in history in the voice of morgan freeman"
+    question = "You are a historian. Tell me about a pivotal moment in history in the voice of morgan freeman"
     poem = "create a short poem about history"
 
 else:
@@ -189,13 +194,23 @@ else:
     question_response = "error yo"
 
 # Ask ChatGPT your question
-poem_response = openai.Completion.create(
-    engine="text-davinci-003", prompt=poem, temperature=temp, max_tokens=1024
+poem_response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo", 
+    messages=[
+        {"role": "user", "content": poem}
+    ],
+    temperature=temp, 
+    max_tokens=512
 )
 
 # Ask ChatGPT your question
-question_response = openai.Completion.create(
-    engine="text-davinci-003", prompt=question, temperature=temp, max_tokens=1024
+question_response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo", 
+    messages=[
+        {"role": "user", "content": question}
+    ],
+    temperature=temp, 
+    max_tokens=1024
 )
 
 
@@ -213,19 +228,19 @@ slack_response = client.send(
         {
             "type": "context",
             "elements": [
-                {"type": "mrkdwn", "text": quote_response["choices"][0]["text"]}
+                {"type": "mrkdwn", "text": quote_response["choices"][0]["message"].get("content")}
             ],
         },
         {"type": "divider"},
         {
             "type": "section",
-            "text": {"type": "mrkdwn", "text": question_response["choices"][0]["text"]},
+            "text": {"type": "mrkdwn", "text": question_response["choices"][0]["message"].get("content")},
         },
         {"type": "divider"},
         {
             "type": "context",
             "elements": [
-                {"text": poem_response["choices"][0]["text"], "type": "mrkdwn"}
+                {"text": poem_response["choices"][0]["message"].get("content"), "type": "mrkdwn"}
             ],
         },
         {"type": "divider"},
